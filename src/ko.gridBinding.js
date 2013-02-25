@@ -1,10 +1,13 @@
 //knockout binding
 (function ($) {
     ko.bindingHandlers.grid = {
-        init: function (element, valueAccessor) {
+        init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
             var value = valueAccessor();
-            $(element).tabletogrid(value);
+            $(element).tabletogrid(value, bindingContext);
             subscribeToSelectEvents(element, value);
+
+            //tell knockout to ignore descendants of this element
+            return { controlsDescendantBindings: true };
         },
         update: function (element, valueAccessor) {
             var value = valueAccessor();
@@ -21,7 +24,7 @@
     }
 
     function subscribeToSelectEvents(element, value) {
-        var idParamName = $(element).getRowId();
+        var idParamName = $(element).getGridParam('localReader').id;
         $(element).jqGrid('setGridParam', {
             onSelectRow: function (id, selected) {
                 var selectedItem = ko.utils.arrayFirst(value.data(), function (item) { return item[idParamName] == id; });
@@ -51,11 +54,7 @@
         });
     }
 
-    $.fn.getRowId = function () {
-        return $(this).getGridParam('localReader').id;
-    };
-
-    $.fn.tabletogrid = function (settings) {
+    $.fn.tabletogrid = function (settings, bindingContext) {
         settings = settings || {};
         $(this).each(function () {
             if (this.grid) { return; }
@@ -67,12 +66,12 @@
             pagerOptions.pager = $(pagerOptions.target).length == 0 ? null : pagerOptions.target;
             $.extend(options, pagerOptions, { width: element.width(), caption: $('caption', element).text(), localReader: { id: idParamName} });
             
-            buildColModel(element, options);
+            buildColModel(element, options, bindingContext);
             element.empty().jqGrid(options);
         });
     };
 
-    function buildColModel(element, options) {
+    function buildColModel(element, options, bindingContext) {
         var templates = $('td', element);
         $('th', element).each(function () {
             var source = $(this),
@@ -82,19 +81,24 @@
             $.extend(model, source.data());
             if (template.length > 0) {
                 model.template = template;
-                model.formatter = knockoutTemplate;
+                model.formatter = createColumnFormatter(bindingContext);
             }
             options.colModel.push(model);
             options.colNames.push(source.html());
         });
     }
 
-    function knockoutTemplate(cellval, opts, rwd) {
-        if (opts.colModel[0]) {
-            var element = $(opts.colModel[0]).clone().prepend('<!-- ko with: ' + ko.toJSON(rwd) + ' -->').append('<!-- /ko -->');
-            ko.applyBindings(rwd, element[0]);
-            return element.html();
-        }
-        return cellval;
-    };
+    function createColumnFormatter(bindingContext) {
+        //use jqgrid support for custom formatters to enable knockout anonymous template syntax
+        //http://www.trirand.com/jqgridwiki/doku.php?id=wiki:custom_formatter
+        return function knockoutTemplate(cellval, opts, rwd) {
+            if (opts.colModel[0]) {
+                var element = $(opts.colModel[0]).clone();
+                ko.applyBindingsToNode(element[0], { 'with': rwd }, bindingContext.$data);
+                return element.html();
+            }
+            return cellval;
+        };
+    }
+    
 })(jQuery);
