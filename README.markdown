@@ -11,23 +11,16 @@ The grid binding plug uses the markup of the table to internally derive an appro
 ###Markup
 
     <div id="pager"></div>
-    <table id="animals" data-bind="grid: { data: animals }" >
+    <table id="animals" data-bind="grid: { data: animals }" style="width:100%;" >
         <caption>Amazing Animals</caption>
         <thead> 
             <tr> 
-                <th data-field="actions" style="width:27px;"></th>
-                <th data-field="name" width="150px">Item Name</th> 
-                <th data-field="sales">Sales Count</th> 
-                <th data-field="price">Price</th> 
+                <th data-field="id" style="min-width:27px;"></th>
+                <th data-field="name">Item Name</th> 
+                <th data-field="sales" style="min-width:100px;">Sales Count</th> 
+                <th data-field="price" style="min-width:60px;">Price</th> 
             </tr> 
         </thead> 
-        <tbody>
-            <tr>
-                <td data-field="actions">
-                    <a class="grid-edit" data-bind="attr:{ href: 'animals/' + id, title: name }, text: id"></a>
-                </td>
-            </tr>
-        </tbody>
     </table>
 
 ###JavaScript
@@ -50,6 +43,6 @@ The grid binding plug uses the markup of the table to internally derive an appro
 For more info and usage examples, see the examples directory.
 
 ###Dependencies
-* Knockout 2.0
+* Knockout 2.0+
 * Jquery 1.6+
 * jqGrid
