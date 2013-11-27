@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+	<title>Knockout: jqGrid Binding</title>
+	<link rel="stylesheet" href="content/reset.css" type="text/css"/>
+	<link rel="stylesheet" href="content/style.css" type="text/css"/>
+	<link rel="stylesheet" href="content/shCore.css" type="text/css"/>
+	<link rel="stylesheet" href="content/shThemeDefault.css" type="text/css"/>
+	<link rel="stylesheet" href="content/jquery-ui-1.8.1.custom.css" type="text/css"/>
+	<link rel="stylesheet" href="content/ui.jqgrid.css" type="text/css"/>
+
+	<script type="text/javascript" src="lib/jquery-1.6.1.min.js"></script>
+	<script type="text/javascript" src="lib/knockout.js"></script>   
+    <script type="text/javascript" src="lib/grid.locale-en.js"></script>
+	<script type="text/javascript" src="lib/jquery.jqGrid.js"></script>
+	<script type="text/javascript" src="../src/ko.gridBinding.js"></script>
+	
+	<script type="text/javascript" src="lib/syntax-highlighting/shCore.js"></script>
+	<script type="text/javascript" src="lib/syntax-highlighting/shBrushXml.js"></script>
+	<script type="text/javascript" src="lib/syntax-highlighting/shBrushJScript.js"></script>
+</head>
+<body>
+	<div class="central-column">
+		<h1>JqGrid Binding</h1>
+		<p>A grid binding plugin for Knockout.js that provides basic integration with the JqGrid plugin for jQuery.</p>
+		<p>Features include: Binding to an observable array of items, progressive enhancement of an existing table (using an extension of the jqgrid tabletogrid feature), selected item and mulit-select items binding, and templated column support.</p>
+		<h2>Usage</h2>
+        <p>The grid binding plug uses the markup of the table to internally derive an appropriate column model for jqgrid to work upon. The data-field attribute denotes the property of each array item to bind a column to, and its header text will carry into the rendered table. A th element is required for each column desired in the rendered table. Optionally, a template can be specified for any column by providing a binding template for the column inside of the tbody element. NB: any inline column widths/styles will be carried into jqgrids column model, and applied to the resultant grid.</p>		
+		<h3>Markup</h3>
+		<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+            <div id="pager"></div>
+            <table id="animals" data-bind="grid: { data: animals }" style="width:100%;">
+                <caption>Amazing Animals</caption>
+                <thead> 
+                    <tr> 
+                        <th data-field="id" style="min-width:27px;"></th>
+                        <th data-field="name">Item Name</th> 
+                        <th data-field="sales" style="min-width:100px;">Sales Count</th> 
+                        <th data-field="price" style="min-width:60px;">Price</th> 
+                    </tr> 
+                </thead> 
+
+            </table>
+		]]></script>
+		<h3>Javascript</h3>
+		<script type="syntaxhighlighter" class="brush: js"><![CDATA[
+			$(function () {
+                var dataService = //some service to load data
+                var viewModel = {
+                    animals: ko.observableArray([]),
+                };
+
+                dataService.GetAnimals(function (result) {
+                    viewModel.animals(result);
+                });
+
+                ko.applyBindings(viewModel);
+            });
+		]]></script>
+		<h3>Results</h3>
+		<div class="results">
+            <div id="pager"></div>
+            <table id="animals" data-bind="grid: { data: animals }" style="width:100%;" >
+                <caption>Amazing Animals</caption>
+                <thead> 
+                    <tr> 
+                        <th data-field="actions" style="min-width:27px;"></th>
+                        <th data-field="name">Item Name</th> 
+                        <th data-field="sales" style="min-width:100px;">Sales Count</th> 
+                        <th data-field="price" style="min-width:60px;">Price</th> 
+                    </tr> 
+                </thead> 
+                <tbody>
+                    <tr>
+                        <td data-field="actions">
+                        	<a class="grid-edit" data-bind="attr:{ href: 'animals/' + id, title: name }, text: id"></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+		</div>
+		<h3>Options</h3>
+		<div class="options">
+			<h4>Binding Options</h4>
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Description</th>
+						<th>Default</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>(default)</td>
+						<td>
+							<p>The default behavior of the plugin.</p>
+							<p>Grid specific overrides can be applied either passing options, or applying <a href="http://www.trirand.com/jqgridwiki/doku.php?id=wiki:options">global defaults for jqgrid</a></p>
+						</td>
+						<td><ul>
+								<li>datatype: "local"</li>
+								<li>isDropTarget : true</li>
+								<li>height: 'auto'</li>
+								<li>pager: '#pager' <br />NB: if there is no element matching the pager target, no pager will be rendered.</li>
+								<li>rowNum: 10</li>
+								<li>rowList: [10, 20, 50]</li>
+								<li>altRows: true</li>
+								<li>width: matches table width</li>
+								<li>caption: matches table caption if provided.</li>
+								</ul></td>
+					</tr>
+					<tr><td>onSelectRow: selectedItemId</td><td>Binds the selectedItemId property of the view model to the selected item using jqgrid’s onSelectRow option.</td><td></td></tr>
+					<tr><td>selectedItem: editModel</td><td>Binds the item with an id that matches the id parameter from jqgrid’s onSelectRow option, to the edit model property of the view model</td><td></td></tr>
+					<tr><td>selectedItems: selectedItems</td><td>Enables jqgrid’s mutliselect option, and binds any selected items to the selectedItems property of the view model</td><td>false</td></tr>
+					<tr><td>pager: { target: '#pager', rowNum: 10, rowList: [10, 20, 50] }</td><td>Overrides the default pager settings with the provided options.</td><td></td></tr>					
+				</tbody>
+			</table>
+		</div>
+        <h3>ColModel Options</h3>
+        <p>The plugin provides additional support for carrying across metadata into the <a href="http://www.trirand.com/jqgridwiki/doku.php?id=wiki:colmodel_options">internal colModel</a> that is used by jqgrid. This allows many of the colModel options to be used, although only those options that take a string parameter are currently supported.</p>
+        <p>To provide additional column model options, a data-* attribute can be applied to the th element for the appropriate column. </p>	
+        <p>For example, in an instance where a column is used to represent, the following markup can be specified:</p>
+        <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+			<th data-field="created" data-sorttype="date" data-datefmt="Y-mmm-d H:i A">Created</th>
+		]]></script>	
+        <p>This will apply the sortType and datefmt options against the colModel for the 'created' column. </p>
+		<h3>Dependencies</h3>
+		<ul class="dependencies">
+			<li>Knockout 2.0</li>
+			<li>Jquery 1.6+</li>
+			<li>jqGrid</li>
+		</ul>
+		<div class="footer">
+			<ul>
+				<li>License: <a href="http://www.opensource.org/licenses/mit-license.php">MIT http://www.opensource.org/licenses/mit-license.php</a></li>
+				<li>Project Home: <a href="https://github.com/craigcav/Knockout-jqGridBinding">https://github.com/craigcav/Knockout-jqGridBinding</a></li>
+			</ul>
+		</div>
+	</div>
+	<script type="text/javascript">	
+        $(function () {
+            var dataService = {
+                GetAnimals: function(callback){
+                    var initialData = [
+                        { id:1, name: "Well-Travelled Kitten", sales: 352, price: 75.95 },
+                        { id:2, name: "Speedy Coyote", sales: 89, price: 190.00 },
+                        { id:3, name: "Furious Lizard", sales: 152, price: 25.00 },
+                        { id:4, name: "Indifferent Monkey", sales: 1, price: 99.95 },
+                        { id:5, name: "Brooding Dragon", sales: 0, price: 6350 },
+                        { id:6, name: "Ingenious Tadpole", sales: 39450, price: 0.35 },
+                        { id:7, name: "Optimistic Snail", sales: 420, price: 1.50 }
+                    ];
+                    callback(initialData);
+                }
+            };
+            var viewModel = {
+                animals: ko.observableArray([]),
+            };
+
+            dataService.GetAnimals(function (result) {
+                viewModel.animals(result);
+            });
+
+            ko.applyBindings(viewModel);
+        });
+		
+		$(function () {
+			SyntaxHighlighter.all();
+		});
+	</script>
+</body>
+</html>
