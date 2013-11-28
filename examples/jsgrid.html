@@ -29,23 +29,16 @@
 		<h3>Markup</h3>
 		<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
             <div id="pager"></div>
-            <table id="animals" data-bind="grid: { data: animals }" >
+            <table id="animals" data-bind="grid: { data: animals }" style="width:100%;">
                 <caption>Amazing Animals</caption>
                 <thead> 
                     <tr> 
-                        <th data-field="actions" style="width:27px;"></th>
-                        <th data-field="name" width="150px">Item Name</th> 
-                        <th data-field="sales">Sales Count</th> 
-                        <th data-field="price">Price</th> 
+                        <th data-field="id" style="min-width:27px;"></th>
+                        <th data-field="name">Item Name</th> 
+                        <th data-field="sales" style="min-width:100px;">Sales Count</th> 
+                        <th data-field="price" style="min-width:60px;">Price</th> 
                     </tr> 
                 </thead> 
-                <tbody>
-                    <tr>
-                        <td data-field="actions">
-                            <a class="grid-edit" data-bind="attr:{ href: 'animals/' + id, title: name }, text: id"></a>
-                        </td>
-                    </tr>
-                </tbody>
             </table>
 		]]></script>
 		<h3>Javascript</h3>
@@ -66,21 +59,16 @@
 		<h3>Results</h3>
 		<div class="results">
             <div id="pager"></div>
-            <table id="animals" data-bind="grid: { data: animals }" >
+            <table id="animals" data-bind="grid: { data: animals }" style="width:100%;" >
                 <caption>Amazing Animals</caption>
                 <thead> 
                     <tr> 
-                        <th data-field="actions" style="width:27px;" data-sortable="false"></th>
-                        <th data-field="name" width="150px">Item Name</th> 
-                        <th data-field="sales">Sales Count</th> 
-                        <th data-field="price">Price</th> 
+                        <th data-field="id" style="min-width:27px;"></th>
+                        <th data-field="name">Item Name</th> 
+                        <th data-field="sales" style="min-width:100px;">Sales Count</th> 
+                        <th data-field="price" style="min-width:60px;">Price</th> 
                     </tr> 
                 </thead> 
-                <tbody>
-                    <tr>
-                        <td data-field="actions"><a class="grid-edit" data-bind="attr:{ href: 'animals/' + id, title: name }, text: id"></a></td>
-                    </tr>
-                </tbody>
             </table>
 		</div>
 		<h3>Options</h3>
