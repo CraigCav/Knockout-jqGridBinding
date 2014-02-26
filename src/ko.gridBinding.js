@@ -60,7 +60,7 @@
             if (this.grid) { return; }
             var element = $(this).width('99%'),
                 options = { datatype: 'local', colModel: [], colNames: [], height: 'auto', altRows: true },
-                pagerOptions = settings.pager || { target: '#pager', rowNum: 10, rowList: [10, 20, 50] },
+                pagerOptions = ko.utils.extend({ target: '#pager', rowNum: 10, rowList: [10, 20, 50] }, settings.pager),
                 idParamName = settings.rowid || 'id';
 
             pagerOptions.pager = $(pagerOptions.target).length == 0 ? null : pagerOptions.target;
