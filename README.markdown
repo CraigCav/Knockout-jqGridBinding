@@ -49,6 +49,8 @@ The grid binding plug uses the markup of the table to internally derive an appro
 ###Examples
 For more info and usage examples, see the examples directory.
 
+http://jsfiddle.net/craigcav/4jvyR/
+
 ###Dependencies
 * Knockout 2.0
 * Jquery 1.6+
